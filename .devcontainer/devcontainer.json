@@ -18,7 +18,6 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm install -g git+https://github.com/McMastercce/bvd-103-mcmasterful-books"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
