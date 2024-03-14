@@ -1,0 +1,9 @@
+services:
+  dev:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-20-bookworm
+  
+  mongo:
+    image: mongodb/mongodb-community-server:latest
+  
+  redis:
+    image: redis/redis-stack-server:latest
