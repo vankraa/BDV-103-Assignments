@@ -22,10 +22,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"rangav.vscode-thunder-client",
-				"ms-azuretools.vscode-docker",
-				"cweijan.vscode-database-client2",
-				"github.vscode-github-actions"
+				"rangav.vscode-thunder-client"
 			]
 		}
 	}
