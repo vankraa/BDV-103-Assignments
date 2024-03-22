@@ -6,6 +6,8 @@ export interface Book {
     image: string,
 };
 
+
+// If you have multiple filters, a book matching any of them is a match.
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
     throw new Error("Todo")
 }
