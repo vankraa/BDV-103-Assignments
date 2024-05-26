@@ -36,5 +36,6 @@ const assignment = "assignment-1";
 
 export default {
     assignment,
-    listBooks
+    listBooks,
+    url
 };

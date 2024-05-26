@@ -1,22 +1,7 @@
 import { createRouteSpec } from 'koa-zod-router';
 import { z } from 'zod';
+import { Book, bookSchema } from './schema'
 import bookList from '../mcmasteful-book-list.json';
-
-interface Book { 
-    name: string,
-    author: string,
-    description: string,
-    price: number,
-    image: string
-};
-
-const bookSchema = z.object({
-    name: z.string(),
-    author: z.string(),
-    description: z.string(),
-    price: z.number().or(z.string()).pipe(z.coerce.number()),
-    image: z.string().url({ message: "Invalid image url" })
-});
 
 function removeDuplicates(book: Book, index:number, bookArray:Book[]) : boolean {
     return index === bookArray.findIndex((b) => 
@@ -114,7 +99,6 @@ const getBooksRoute = createRouteSpec({
         response: z.array(bookSchema),
     },
 });
-
 
 export default {
     getBooksRoute

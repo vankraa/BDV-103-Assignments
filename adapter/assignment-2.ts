@@ -1,3 +1,4 @@
+import { captureRejectionSymbol } from "koa";
 import assignment1 from "./assignment-1";
 
 export type BookID = string;
@@ -16,11 +17,35 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
 }
 
 async function createOrUpdateBook(book: Book): Promise<BookID> {
-    throw new Error("Todo")
+    const response = await fetch(`${assignment1.url}/update_book_list`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/plain'
+        },
+        body: JSON.stringify(book)
+    });
+
+    if (!response.ok) {
+        return Promise.reject(`Failed to create or update book. HTTP status: ${response.status}`);
+    }
+    else {
+        const bookId = String(response.body);
+        return Promise.resolve<BookID>(bookId);
+    }
 }
 
 async function removeBook(book: BookID): Promise<void> {
-    throw new Error("Todo")
+    const response = await fetch(`${assignment1.url}/delete_book?${book}`, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) {
+        return Promise.reject(`Failed to delete book. HTTP status: ${response.status}`);
+    }
+    else {
+        return Promise.resolve();
+    }
 }
 
 const assignment = "assignment-2";

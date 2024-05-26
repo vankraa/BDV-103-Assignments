@@ -6,3 +6,13 @@ services:
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity
+    networks:
+      - app-network 
+
+  mongo:
+    image: mongo:latest
+    networks:
+      - app-network
+
+  networks:
+    app-network:
