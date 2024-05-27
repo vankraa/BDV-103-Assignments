@@ -1,7 +1,8 @@
 import { createRouteSpec } from 'koa-zod-router';
 import { z } from 'zod';
-import { Book, bookSchema } from './schema'
-import bookList from '../mcmasteful-book-list.json';
+import { Book, bookSchema, connectToMongoDB } from './schema'
+// import bookList from '../mcmasteful-book-list.json';
+
 
 function removeDuplicates(book: Book, index:number, bookArray:Book[]) : boolean {
     return index === bookArray.findIndex((b) => 
@@ -16,10 +17,21 @@ function removeDuplicates(book: Book, index:number, bookArray:Book[]) : boolean 
 const getBooksRoute = createRouteSpec({
     method: 'get',
     path: '/books',
-    handler: (ctx) => {
+    handler: async (ctx) => {
         try {
+
+            const documentCollection = await connectToMongoDB();
+            const documentArray = await documentCollection.find().toArray();
+            let books: Book[] = documentArray.map(doc => ({
+                id: doc.id,
+                name: doc.name,
+                author: doc.author,
+                description: doc.description,
+                price: doc.price,
+                image: doc.image
+            }));
             // console.log('before sort and filter');
-            let bookListSortedAndFiltered = bookList.sort().filter(removeDuplicates);
+            let bookListSortedAndFiltered = books.sort().filter(removeDuplicates);
             
             
             // console.log('before query string handling');

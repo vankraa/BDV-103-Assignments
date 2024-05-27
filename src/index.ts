@@ -14,12 +14,7 @@ router.register(modifyBooks.deleteBookRoute);
 app.use(router.routes());
 
 const mongoose = require('mongoose');
-
-// MongoDB connection URI
-const mongoURI = 'mongodb://mongo:27017/mydatabase'; // "mongo" is the service name specified in docker-compose.yml
-
-// Connect to MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://mongo:27017/mydatabase')
   .then(() => console.log('MongoDB connected'))
   .catch((err: Error) => console.error('MongoDB connection error:', err));
 

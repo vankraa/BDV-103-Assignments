@@ -1,19 +1,24 @@
 import { createRouteSpec } from 'koa-zod-router';
 import { z } from 'zod';
-import { Book, bookSchema } from './schema'
-import bookList from '../mcmasteful-book-list.json';
+import { Book, bookSchema, connectToMongoDB } from './schema'
+import { ObjectId } from 'mongodb'
 
-let books = bookList;
 
 const createOrUpdateBookRoute = createRouteSpec({
     method: 'post',
     path: '/update_book_list',
-    handler: (ctx) => {
-        const bookIndex = bookList.findIndex(book => book.name === String(ctx.query));
-        if (bookIndex >= 0) {
-            bookList.splice(bookIndex, 1);
-        } else {
-            ctx.status = 500;
+    handler: async (ctx) => {
+        const documentCollection = connectToMongoDB();
+        const book = JSON.parse(ctx.body) as Book;
+
+        const result = (await documentCollection).updateOne(
+            { _id: book.id },
+            { $set: book }
+        );
+
+        if ((await result).matchedCount === 0) {
+            (await documentCollection).insertOne(book);
+            return;
         }
     },
     validate: {
@@ -25,13 +30,16 @@ const createOrUpdateBookRoute = createRouteSpec({
 const deleteBookRoute = createRouteSpec({
     method: 'delete',
     path: '/delete_book',
-    handler: (ctx) => {
+    handler: async (ctx) => {
         console.log(ctx.query);
-        const bookIndex = bookList.findIndex(book => book.name === String(ctx.query));
-        if (bookIndex >= 0) {
-            bookList.splice(bookIndex, 1);
-        } else {
-            ctx.status = 500;
+        const documentCollection = connectToMongoDB();
+        const bookId = ObjectId.createFromBase64(String(ctx.body));
+
+        const result = (await documentCollection).deleteOne({ _id: bookId });
+
+        if ((await result).deletedCount === 0) {
+            ctx.throw(404, 'Book not found');
+            return;
         }
     },
     validate: {

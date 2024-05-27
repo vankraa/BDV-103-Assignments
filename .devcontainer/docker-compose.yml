@@ -6,13 +6,15 @@ services:
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity
-    networks:
-      - app-network 
+    links:
+      - mongo 
 
   mongo:
     image: mongo:latest
-    networks:
-      - app-network
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data/db
 
-  networks:
-    app-network:
+volumes:
+  data:
