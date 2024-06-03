@@ -1,6 +1,7 @@
 import { createRouteSpec } from 'koa-zod-router';
 import { z } from 'zod';
-import { Book, bookSchema, connectToMongoDB } from './schema'
+import { Book, bookZodSchema, connectToMongoDB } from './schema'
+import { ObjectId } from 'mongodb'
 // import bookList from '../mcmasteful-book-list.json';
 
 
@@ -23,7 +24,7 @@ const getBooksRoute = createRouteSpec({
             const documentCollection = await connectToMongoDB();
             const documentArray = await documentCollection.find().toArray();
             let books: Book[] = documentArray.map(doc => ({
-                id: doc.id,
+                id: doc._id.toString(),
                 name: doc.name,
                 author: doc.author,
                 description: doc.description,
@@ -100,6 +101,7 @@ const getBooksRoute = createRouteSpec({
             ctx.body = bookListSortedAndFiltered;
         } catch (error) {
             console.error("Error found: ", error);
+            
             ctx.status = 500;
         }
     },
@@ -108,7 +110,7 @@ const getBooksRoute = createRouteSpec({
             from: z.union([z.array(z.coerce.number()), z.coerce.number()]).optional(),
             to: z.union([z.array(z.coerce.number()), z.coerce.number()]).optional()
         }).optional(),
-        response: z.array(bookSchema),
+        response: z.array(bookZodSchema),
     },
 });
 

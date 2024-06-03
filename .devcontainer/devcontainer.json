@@ -7,7 +7,8 @@
 	"service": "dev",
 	"features": {
 		"ghcr.io/devcontainers-contrib/features/tsx:1": {},
-		"ghcr.io/mcmastercce/bvd-103-mcmasterful-books/mcmasterful-books:latest": {}
+		"ghcr.io/mcmastercce/bvd-103-mcmasterful-books/mcmasterful-books:latest": {},
+		"ghcr.io/devcontainers-contrib/features/mongosh-homebrew:1": {}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -22,7 +23,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"rangav.vscode-thunder-client"
+				"rangav.vscode-thunder-client",
+				"mongodb.mongodb-vscode"
 			]
 		}
 	},

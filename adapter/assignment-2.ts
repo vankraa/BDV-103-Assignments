@@ -20,8 +20,7 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
     const response = await fetch(`${assignment1.url}/update_book_list`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'text/plain'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(book)
     });
@@ -36,7 +35,7 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
 }
 
 async function removeBook(book: BookID): Promise<void> {
-    const response = await fetch(`${assignment1.url}/delete_book?${book}`, {
+    const response = await fetch(`${assignment1.url}/delete_book?id=${book}`, {
         method: 'DELETE',
     });
 
