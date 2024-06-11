@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { MongoClient, ObjectId } from 'mongodb';
-import { connect, Schema } from 'mongoose'
 
 export interface Book {
     _id?: ObjectId,
@@ -31,11 +30,9 @@ export const bookZodSchema = z.object({
 
 export async function connectToMongoDB() {
     try {
-        const client = new MongoClient('mongodb://mongo:27017');
-        await client.connect()
-            .then(() => console.log('Found database client'))
-            .catch((err: Error) => console.error('MongoDB connection error:', err));
-        return client.db('bookdb').collection('mcmasterful_books');
+        const client = new MongoClient('mongodb://mongo'); // and changed it here
+        await client.connect();
+        return client.db('mcmasterfulBooks').collection('books');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
         throw error;

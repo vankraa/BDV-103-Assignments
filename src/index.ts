@@ -13,13 +13,6 @@ router.register(modifyBooks.createOrUpdateBookRoute);
 router.register(modifyBooks.deleteBookRoute);
 app.use(router.routes());
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://mongo:27017/bookdb')
-  .then(() => console.log('MongoDB connected'))
-  .catch((err: Error) => console.error('MongoDB connection error:', err));
-
-mongoose.c
-
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

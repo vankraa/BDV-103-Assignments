@@ -9,51 +9,39 @@ const createOrUpdateBookRoute = createRouteSpec({
     method: 'post',
     path: '/update_book_list',
     handler: async (ctx) => {
-        // console.log(ObjectId.createFromBase64("542c2b97bac0595474108b48"));
-        console.log(ctx.request.body);
-        const book = s.translateTo_id(ctx.request.body as Book);
-        const id = new ObjectId(book._id);
-        console.log(`_id: ${id._id}`);
-        try {
-            const documentCollection = s.connectToMongoDB();
+        const documentCollection = await s.connectToMongoDB(); // Await the connection
+        let book = ctx.request.body;
 
-            const updateResult = (await documentCollection).updateOne(
-                { _id: id },
-                { $set: book },
-                { upsert: true }
-            ).then((result) => {
-                if(result.matchedCount > 0)
-                    console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`);
-                else if (result.upsertedCount > 0)
-                    console.log(`${result.upsertedCount} document created with  with id: ${result.upsertedId}`);
-                else
-                    throw new MongooseError("Could not insert a new document into the database.");
-                return result;
-            });
-        } catch (error) {
-            if (error instanceof MongooseError) {
-                console.log(error.message);
+        if (book.id) {
+            const result = await documentCollection.updateOne(
+                { _id: ObjectId.createFromBase64(book.id) },
+                { $set: book }
+            );
+            if (result.matchedCount > 0) {
+                ctx.status = 200;
+            } else {
+                const id = new ObjectId(); // for creation, you need to generate the id
+                (await documentCollection).insertOne({ _id: id, ...book});
+                return;
             }
-            else {
-                console.error(error);
-            }
+        } else {
+            await documentCollection.insertOne(book);
+            ctx.status = 201;
         }
-        
-        ctx.response.body = id.toString();
     },
     validate: {
-        // body: jsonSchema,
-        response: z.string(),
+        body: s.bookZodSchema
     },
 });
 
+
 const deleteBookRoute = createRouteSpec({
     method: 'delete',
-    path: '/delete_book',
+    path: '/delete_book/:id',
     handler: async (ctx) => {
         console.log(ctx.query);
         const documentCollection = s.connectToMongoDB();
-        const bookId = new ObjectId(ctx.querystring);
+        const bookId = ObjectId.createFromHexString(String(ctx.params.id));
 
         const result = (await documentCollection).deleteOne({ _id: bookId });
 
@@ -61,9 +49,12 @@ const deleteBookRoute = createRouteSpec({
             ctx.throw(404, 'Book not found');
             return;
         }
+        else {
+            ctx.status = 200;
+        }
     },
     validate: {
-        params: z.coerce.string()
+        params: z.object({ id: z.string() })
     },
 });
 

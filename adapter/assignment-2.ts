@@ -35,7 +35,7 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
 }
 
 async function removeBook(book: BookID): Promise<void> {
-    const response = await fetch(`${assignment1.url}/delete_book?id=${book}`, {
+    const response = await fetch(`${assignment1.url}/delete_book/${book}`, {
         method: 'DELETE',
     });
 
